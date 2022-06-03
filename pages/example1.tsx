@@ -28,20 +28,31 @@ const IndexPage: NextPage = () => {
   console.log('anything?', sourceNode)
 
   return (
-    <Layout title="Home | Next.js + TypeScript Example">
-      <AudioControlContext.Provider
-        value={{
-          selectedFile,
-          setSelectedFile,
-          audioContext,
-          sourceNode,
-          setSourceNode,
-        }}
-      >
-        <ControlHeader />
+    <Layout title="Example 1">
+      <div className="container mx-auto px-4">
+        <header className="mt-10">
+          <h1 className="font-bold uppercase text-2xl">description</h1>
+          <p>
+            An example build with simple audio file and work in for play, pause,
+            resume.
+          </p>
+          <p>This is built with Audio context with createBufferSource.</p>
+        </header>
+        <hr className="my-8 border-gray-400" />
+        <AudioControlContext.Provider
+          value={{
+            selectedFile,
+            setSelectedFile,
+            audioContext,
+            sourceNode,
+            setSourceNode,
+          }}
+        >
+          <ControlHeader />
 
-        <h3>DOES NOT WORK Current Time: {currentTime}</h3>
-      </AudioControlContext.Provider>
+          <h3>DOES NOT WORK Current Time: {currentTime}</h3>
+        </AudioControlContext.Provider>
+      </div>
     </Layout>
   )
 }
