@@ -28,7 +28,6 @@ export const createBuffer = async (
     .then((audioBuffer) => {
       source.buffer = audioBuffer
       source.connect(states.audioContext.destination)
-      source.start()
       setStates({ ...states, bufferSource: source })
       return source
     })

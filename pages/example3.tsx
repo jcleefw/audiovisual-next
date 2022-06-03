@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
 import Visualizer from './Example3/component/Visualizer'
 import { createBuffer, performFileReader } from './Example3/utils/utils'
-const buttonClassName = 'px-6 py-2 bg-green-300 text-gray-800 rounded-md'
+const buttonClassName = 'px-6 py-2 rounded-md'
+const buttonDisabled = 'bg-gray-300 text-gray-500'
+const buttonEnabled = 'bg-green-300 text-gray-800'
 
 interface ExampleFileProps extends File {
   url: string
@@ -24,9 +26,10 @@ const Example2: NextPage = () => {
   const [RID, setRID] = useState<any>(null)
   const [loaded, setLoaded] = useState(false)
   const [states, setStates] = useState<AudioContextStatesProps | null>(null)
-  const [buffer, setBuffer] = useState<any>(null)
-  const [playTimer, setPlayTimer] = useState<number>(0.0)
-  const playerRef = React.useRef<HTMLAudioElement>(null)
+  const [buffer, setBuffer] = useState<AudioBufferSourceNode | null>(null)
+  const [isPlaying, setPlayed] = useState<boolean>(false)
+  // const [playTimer, setPlayTimer] = useState<number>(0.0)
+  // const playerRef = React.useRef<HTMLAudioElement>(null)
   const onChangeHandler = (e: React.ChangeEvent) => {
     const target = e.target as HTMLInputElement
     console.log('handleFileChange', target.files)
@@ -39,28 +42,20 @@ const Example2: NextPage = () => {
     }
   }
 
-  const stop = () => {
-    playerRef.current?.pause()
-    cancelAnimationFrame(RID)
-    setRID(null)
-    states?.audioContext.suspend()
-  }
-  const play = () => {
-    playerRef.current?.play()
-    const rafID = requestAnimationFrame(tick)
-    setRID(rafID)
-    states?.audioContext.resume()
-  }
-
   const onClickHandler = (type: string) => {
-    if (playerRef.current && states?.audioContext) {
-      const currentTime = states.audioContext.currentTime
-      if (type === 'play' && !RID) {
-        play()
-      } else if (type === 'stop') {
-        stop()
+    const analyzer = states?.audioContext.createAnalyser()
+    const audioContext = states?.audioContext
+
+    console.log('arrayBuffer', selectedFile?.arrayBuffer)
+    if (analyzer && audioContext) {
+      if (type === 'play') {
+        states?.bufferSource?.start()
+        setPlayed(true)
+      } else if (type === 'pause') {
+        audioContext.suspend()
+      } else if (type === 'resume') {
+        audioContext.resume()
       }
-      console.log('current Time', currentTime)
     }
   }
 
@@ -73,7 +68,6 @@ const Example2: NextPage = () => {
   }
 
   const tick = () => {
-    console.log('ticker ... ')
     if (states?.analyser) {
       const analyser = states.analyser
       const dataArray = new Uint8Array(analyser.frequencyBinCount)
@@ -88,13 +82,15 @@ const Example2: NextPage = () => {
     if (selectedFile?.url && !loaded) {
       drawAudio()
     }
+
     if (states?.audioContext && selectedFile && !buffer) {
+      // TODO  deal with callback async. This is a very important step to previous infinite loop
       const bufferswhy = createBuffer(selectedFile.url, states, setStates)
       setBuffer(bufferswhy)
-      setPlayTimer(states.audioContext.currentTime)
+      // setPlayTimer(states.audioContext.currentTime)
     }
 
-    if (buffer && loaded) {
+    if (loaded && buffer) {
       console.log('about to start request....')
       requestAnimationFrame(tick)
     }
@@ -102,19 +98,28 @@ const Example2: NextPage = () => {
   return (
     <div>
       <input type="file" onChange={onChangeHandler} />
-      <audio ref={playerRef} controls src={selectedFile?.url}></audio>
-      {/* <button
-        className={cx(buttonClassName)}
+      <button
+        className={cx(buttonClassName, {
+          [buttonDisabled]: isPlaying,
+          [buttonEnabled]: !isPlaying,
+        })}
         onClick={(_e) => onClickHandler('play')}
+        disabled={isPlaying}
       >
         play
       </button>
       <button
-        className={cx(buttonClassName)}
-        onClick={(_e) => onClickHandler('stop')}
+        className={cx(buttonClassName, buttonEnabled)}
+        onClick={(_e) => onClickHandler('resume')}
       >
-        stop
-      </button> */}
+        resume
+      </button>
+      <button
+        className={cx(buttonClassName, buttonEnabled)}
+        onClick={(_e) => onClickHandler('pause')}
+      >
+        pause
+      </button>
       <Visualizer audioData={audioData} />
     </div>
   )
