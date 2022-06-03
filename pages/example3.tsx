@@ -19,6 +19,8 @@ const Example2: NextPage = () => {
   const [selectedFile, setSelectedFile] = useState<ExampleFileProps | null>(
     null
   )
+  const [audioData, setAudioData] = useState<Uint8Array | null>(null)
+
   const [RID, setRID] = useState<any>(null)
   const [loaded, setLoaded] = useState(false)
   const [states, setStates] = useState<AudioContextStatesProps | null>(null)
@@ -76,9 +78,9 @@ const Example2: NextPage = () => {
       const analyser = states.analyser
       const dataArray = new Uint8Array(analyser.frequencyBinCount)
       analyser?.getByteFrequencyData(dataArray)
-      console.log(dataArray)
       const rafID = requestAnimationFrame(tick)
       setRID(rafID)
+      setAudioData(dataArray)
     }
   }
 
@@ -101,7 +103,7 @@ const Example2: NextPage = () => {
     <div>
       <input type="file" onChange={onChangeHandler} />
       <audio ref={playerRef} controls src={selectedFile?.url}></audio>
-      <button
+      {/* <button
         className={cx(buttonClassName)}
         onClick={(_e) => onClickHandler('play')}
       >
@@ -112,8 +114,8 @@ const Example2: NextPage = () => {
         onClick={(_e) => onClickHandler('stop')}
       >
         stop
-      </button>
-      {/* <Visualizer audioData={audioData} /> */}
+      </button> */}
+      <Visualizer audioData={audioData} />
     </div>
   )
 }

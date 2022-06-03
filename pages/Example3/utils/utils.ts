@@ -26,7 +26,6 @@ export const createBuffer = async (
     .then((response) => response.arrayBuffer())
     .then((arrayBuffer) => states.audioContext.decodeAudioData(arrayBuffer))
     .then((audioBuffer) => {
-      console.log('audioBuffer....')
       source.buffer = audioBuffer
       source.connect(states.audioContext.destination)
       source.start()
