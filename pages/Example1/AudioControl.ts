@@ -49,15 +49,16 @@ const stopSample = (e: React.MouseEvent, context: IAudioControlContext) => {
   if (audioContext) {
     sourceNode.disconnect(audioContext.destination)
     sourceNode.stop(0)
+    console.log('stop', audioContext, sourceNode)
     setSourceNode(null)
   }
 }
 
 const pauseSample = (e: React.MouseEvent, context: IAudioControlContext) => {
-  const { sourceNode, audioContext } = context
+  const { audioContext } = context
   if (audioContext) {
     audioContext.suspend()
-    console.log('pause', audioContext)
+    console.log('pause', audioContext.state, audioContext)
   }
 }
 

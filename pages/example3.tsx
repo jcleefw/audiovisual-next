@@ -1,12 +1,8 @@
 import { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
-
-import cx from 'classnames'
 import Visualizer from './Example3/component/Visualizer'
 import { createBuffer, performFileReader } from './Example3/utils/utils'
-const buttonClassName = 'px-6 py-2 rounded-md'
-const buttonDisabled = 'bg-gray-300 text-gray-500'
-const buttonEnabled = 'bg-green-300 text-gray-800'
+import { Button } from '../components/Button'
 
 interface ExampleFileProps extends File {
   url: string
@@ -17,7 +13,7 @@ export interface AudioContextStatesProps {
   analyser?: AnalyserNode
   bufferSource?: AudioBufferSourceNode
 }
-const Example2: NextPage = () => {
+const Example3: NextPage = () => {
   const [selectedFile, setSelectedFile] = useState<ExampleFileProps | null>(
     null
   )
@@ -98,31 +94,14 @@ const Example2: NextPage = () => {
   return (
     <div>
       <input type="file" onChange={onChangeHandler} />
-      <button
-        className={cx(buttonClassName, {
-          [buttonDisabled]: isPlaying,
-          [buttonEnabled]: !isPlaying,
-        })}
-        onClick={(_e) => onClickHandler('play')}
-        disabled={isPlaying}
-      >
+      <Button isDisabled={isPlaying} onClick={() => onClickHandler('play')}>
         play
-      </button>
-      <button
-        className={cx(buttonClassName, buttonEnabled)}
-        onClick={(_e) => onClickHandler('resume')}
-      >
-        resume
-      </button>
-      <button
-        className={cx(buttonClassName, buttonEnabled)}
-        onClick={(_e) => onClickHandler('pause')}
-      >
-        pause
-      </button>
+      </Button>
+      <Button onClick={() => onClickHandler('resume')}>resume</Button>
+      <Button onClick={() => onClickHandler('pause')}>pause</Button>
       <Visualizer audioData={audioData} />
     </div>
   )
 }
 
-export default Example2
+export default Example3

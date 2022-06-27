@@ -14,18 +14,15 @@ const IndexPage: NextPage = () => {
     useState<IAudioControlContext['selectedFile']>(null)
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null)
   const [sourceNode, setSourceNode] = useState<any>(null)
-  const [currentTime, setCurrentTime] = useState<number | null>(null)
+  const [startTime, setStartTime] = useState<Date | null>(null)
+  const [pauseTime, setPauseTime] = useState<Date | null>(null)
 
   useEffect(() => {
     if (audioContext === null) {
       setAudioContext(new AudioContext())
     }
-    // TODO
-    if (audioContext?.currentTime) {
-      setCurrentTime(currentTime)
-    }
-  }, [audioContext, audioContext?.currentTime, selectedFile])
-  console.log('anything?', sourceNode)
+    console.log(sourceNode)
+  }, [audioContext, sourceNode])
 
   return (
     <Layout title="Example 1">
@@ -33,10 +30,12 @@ const IndexPage: NextPage = () => {
         <header className="mt-10">
           <h1 className="font-bold uppercase text-2xl">description</h1>
           <p>
-            An example build with simple audio file and work in for play, pause,
+            An simple example build with audio file and work in for play, pause,
             resume.
           </p>
-          <p>This is built with Audio context with createBufferSource.</p>
+          <p>
+            This is built with Audio context with <b>createBufferSource</b>.
+          </p>
         </header>
         <hr className="my-8 border-gray-400" />
         <AudioControlContext.Provider
@@ -49,8 +48,6 @@ const IndexPage: NextPage = () => {
           }}
         >
           <ControlHeader />
-
-          <h3>DOES NOT WORK Current Time: {currentTime}</h3>
         </AudioControlContext.Provider>
       </div>
     </Layout>

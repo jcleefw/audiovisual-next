@@ -3,13 +3,16 @@ import AudioControl from '../AudioControl'
 import cx from 'classnames'
 import { AudioControlContext } from '../../example1'
 import { IAudioControlContext } from '../../../interfaces/types'
-const buttonClassName = 'px-6 py-2 bg-green-300 text-gray-800 rounded-md'
+import { Button } from '../../../components/Button'
+const buttonClassName = 'px-6 py-2 rounded-md'
 
 export const ControlHeader = () => {
   const context = useContext(AudioControlContext) as IAudioControlContext
+
+  const enabledPlayButton = context.selectedFile
   return (
-    <div className="flex p-2 justify-between">
-      <div className="flex text-sm text-gray-600 items-center">
+    <div className="flex p-2 flex-col">
+      <div className="flex my-4 text-sm text-gray-600 items-center">
         <label
           htmlFor="file-upload"
           className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
@@ -22,6 +25,7 @@ export const ControlHeader = () => {
           >
             Give me a file{' '}
           </span>
+
           <input
             id="file-upload"
             name="file-upload"
@@ -30,40 +34,46 @@ export const ControlHeader = () => {
             onChange={(e) => AudioControl.handleFileChange(e, context)}
           />
         </label>
-        <p className="pl-1">then I'll play the song</p>
+        {!context.selectedFile && (
+          <p className="pl-1">then I'll play the song</p>
+        )}
+        {context.selectedFile && (
+          <b>{context.selectedFile._nativeFile?.name}</b>
+        )}
       </div>
-      <button
-        id="playSampleButton"
-        type="button"
-        onClick={(e) => AudioControl.playSample(e, context)}
-        className={buttonClassName}
-      >
-        Play Sample File
-      </button>
-      <button
-        id="stopSampleButton"
-        type="button"
-        onClick={(e) => AudioControl.stopSample(e, context)}
-        className={buttonClassName}
-      >
-        Stop Sample File
-      </button>
-      <button
-        id="resumeSampleButton"
-        type="button"
-        onClick={(e) => AudioControl.resumeSample(e, context)}
-        className={buttonClassName}
-      >
-        Resume Sample File
-      </button>
-      <button
-        id="pauseSampleButton"
-        type="button"
-        onClick={(e) => AudioControl.pauseSample(e, context)}
-        className={buttonClassName}
-      >
-        Pause Sample File
-      </button>
+      <div>
+        <Button
+          id="playSampleButton"
+          isDisabled={!enabledPlayButton}
+          onClick={(e) => AudioControl.playSample(e, context)}
+        >
+          Play Sample File
+        </Button>
+
+        <Button
+          id="stopSampleButton"
+          isDisabled={!context.sourceNode}
+          onClick={(e) => AudioControl.stopSample(e, context)}
+        >
+          Stop Sample File
+        </Button>
+
+        <Button
+          id="resumeSampleButton"
+          isDisabled={!context.sourceNode}
+          onClick={(e) => AudioControl.resumeSample(e, context)}
+        >
+          Resume Sample File
+        </Button>
+
+        <Button
+          id="pauseSampleButton"
+          isDisabled={!context.sourceNode}
+          onClick={(e) => AudioControl.pauseSample(e, context)}
+        >
+          Pause Sample File
+        </Button>
+      </div>
     </div>
   )
 }

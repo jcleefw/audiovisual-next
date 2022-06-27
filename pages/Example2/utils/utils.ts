@@ -29,7 +29,7 @@ export const setupAudioContext = (playerRef: any) => {
   }
 }
 
-export const drawAudio = async (url, audioContext) => {
+export const drawAudio = async (url: string, audioContext: AudioContext) => {
   return fetch(url)
     .then((response) => response.arrayBuffer())
     .then((arrayBuffer) => audioContext.decodeAudioData(arrayBuffer))
@@ -41,12 +41,12 @@ export const drawAudio = async (url, audioContext) => {
     })
 }
 
-const normalizeData = (filteredData) => {
+const normalizeData = (filteredData: number[]) => {
   const multiplier = Math.pow(Math.max(...filteredData), -1)
   return filteredData.map((n) => n * multiplier)
 }
 
-const filterData = (audioBuffer) => {
+const filterData = (audioBuffer: AudioBuffer) => {
   const rawData = audioBuffer.getChannelData(0) // We only need to work with one channel of data
   const samples = 70000 // Number of samples we want to have in our final data set
   const blockSize = Math.floor(rawData.length / samples) // the number of samples in each subdivision
