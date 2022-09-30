@@ -26,5 +26,6 @@
     "tailwindcss": "^1.1.4",
     "typescript": "4.3.2"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "packageManager": "yarn@3.2.3"
 }

@@ -10,3 +10,12 @@ Tech used
 - Canvas API
 
 TaskList []
+### How to setup
+1. Make sure the your switch to yarn berry v3.x and above
+```sh
+yarn set version berry
+```
+
+2. install the project
+
+3. run `yarn dev` to start project in development mode
